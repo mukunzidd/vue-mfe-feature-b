@@ -1,9 +1,17 @@
 {
   "extends": "./tsconfig.app.json",
   "exclude": [],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.spec.ts"
+  ],
   "compilerOptions": {
     "composite": true,
-    "lib": [],
-    "types": ["node", "jsdom"]
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["node", "jsdom", "vitest/globals"],
+    "noImplicitAny": false
   }
 }

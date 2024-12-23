@@ -6,11 +6,11 @@ import TodoList from '../TodoList.vue'
 describe('TodoList', () => {
   const localStorageMock = {
     store: {} as Record<string, string>,
-    getItem: vi.fn((key: string) => localStorageMock.store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: vi.fn().mockImplementation((key: string) => localStorageMock.store[key] || null),
+    setItem: vi.fn().mockImplementation((key: string, value: string) => {
       localStorageMock.store[key] = value.toString()
     }),
-    clear: vi.fn(() => {
+    clear: vi.fn().mockImplementation(() => {
       localStorageMock.store = {}
     })
   }
@@ -66,7 +66,7 @@ describe('TodoList', () => {
 
     // Verify localStorage was updated
     expect(localStorageMock.setItem).toHaveBeenCalled()
-    const storedData = JSON.parse(localStorageMock.getItem(storageKey) || '{}')
+    const storedData = JSON.parse(localStorageMock.getItem(storageKey) || '{"todos":[],"nextId":1}')
     expect(storedData.todos).toHaveLength(1)
     expect(storedData.todos[0].text).toBe('Persistent todo')
     expect(storedData.nextId).toBe(2)

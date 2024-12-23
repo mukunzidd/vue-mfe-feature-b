@@ -1,7 +1,7 @@
 # Vue MFE Feature B
 
 [![npm version](https://img.shields.io/npm/v/@mknz/vue-mfe-feature-b)](https://www.npmjs.com/package/@mknz/vue-mfe-feature-b)
-[![Tests](https://img.shields.io/badge/tests-4%20passing-brightgreen)](https://github.com/mukunzi10/vue-mfe-feature-b/actions)
+[![Tests](https://img.shields.io/badge/tests-4%20passing-brightgreen)](https://github.com/mukunzidd/vue-mfe-feature-b/actions)
 
 A Vue.js TodoList component for micro-frontend architecture, built with the `@mknz/vue-mfe-wrapper` framework.
 
@@ -32,6 +32,7 @@ npm install @mknz/vue-mfe-feature-b @mknz/vue-mfe-wrapper
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FrameworkWrapper } from '@mknz/vue-mfe-wrapper'
+import { VueMfeFeatureB, TodoList } from './features'
 import type { WrapperConfig } from '@mknz/vue-mfe-wrapper'
 
 const config = ref<WrapperConfig>({

@@ -60,6 +60,13 @@
     "typescript",
     "micro-frontend"
   ],
-  "author": "Mukunzi",
-  "license": "MIT"
+  "author": "mukunzi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mukunzidd/vue-mfe-feature-b"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
