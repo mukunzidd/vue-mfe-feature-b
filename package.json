@@ -1,6 +1,6 @@
 {
   "name": "@mknz/vue-mfe-feature-b",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "Feature B: A Vue 3 component for micro-frontend architecture",
   "type": "module",
