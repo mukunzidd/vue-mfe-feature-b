@@ -1,50 +1,61 @@
-# @mknz/vue-mfe-feature-b
+# Vue MFE Feature B
 
-A Vue 3 Todo List component designed as a micro-frontend feature. This package is part of the Vue MFE ecosystem and can be easily integrated into applications using the `@mknz/vue-mfe-wrapper`.
+[![npm version](https://img.shields.io/npm/v/@mknz/vue-mfe-feature-b)](https://www.npmjs.com/package/@mknz/vue-mfe-feature-b)
+
+A Vue.js TodoList component for micro-frontend architecture, built with the `@mknz/vue-mfe-wrapper` framework.
 
 ## Features
 
-- Add, toggle, and remove todo items
-- Dark and light theme support
-- Fully typed with TypeScript
-- Responsive design
-- Clean and modern UI
+- 📝 Persistent TodoList with local storage
+- 🎨 Customizable storage key
+- 🔄 Real-time updates
+- 📱 Responsive design
+- 🎯 Maximum items limit control
 
 ## Installation
 
-```sh
+```bash
 npm install @mknz/vue-mfe-feature-b
 ```
 
-## Usage
-
-1. First, import the feature in your wrapper application:
-
-```ts
-import { VueMfeFeatureB } from '@mknz/vue-mfe-feature-b'
-import '@mknz/vue-mfe-feature-b/style.css'
-
-// Add to your wrapper config
-const config = {
-  features: [VueMfeFeatureB]
-}
-```
-
-2. Use the TodoList component:
+## Usage with Vue MFE Wrapper
 
 ```vue
 <template>
-  <TodoList theme="dark" />
+  <FrameworkWrapper :config="config">
+    <!-- Feature B will be rendered here -->
+  </FrameworkWrapper>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { FrameworkWrapper } from '@mknz/vue-mfe-wrapper'
+import type { WrapperConfig } from '@mknz/vue-mfe-wrapper'
+
+const config = ref<WrapperConfig>({
+  features: [
+    {
+      name: 'feature-b',
+      props: {
+        storageKey: 'my-todos',
+        maxItems: 100
+      }
+    }
+  ]
+})
+</script>
 ```
 
-### Props
+## Props
 
-- `theme` (optional): 'light' | 'dark' - Sets the visual theme of the todo list. Defaults to 'light'.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `storageKey` | `string` | `'vue-mfe-todos'` | Key used for local storage |
+| `maxItems` | `number` | `100` | Maximum number of todo items |
 
 ## Development
 
-```sh
+```bash
 # Install dependencies
 npm install
 
@@ -55,10 +66,7 @@ npm run dev
 npm run build
 
 # Run tests
-npm run test:unit
-
-# Lint
-npm run lint
+npm run test
 ```
 
 ## License
