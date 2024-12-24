@@ -1,104 +1,114 @@
-# Vue MFE Feature B
+# Vue MFE Feature B - TodoList Component
 
-[![npm version](https://img.shields.io/npm/v/@mknz/vue-mfe-feature-b)](https://www.npmjs.com/package/@mknz/vue-mfe-feature-b)
-[![Tests](https://img.shields.io/badge/tests-4%20passing-brightgreen)](https://github.com/mukunzidd/vue-mfe-feature-b/actions)
+[![Tests](https://img.shields.io/badge/tests-4%20passing-brightgreen.svg)](https://github.com/mukunzidd/vue-mfe-feature-b)
 
-A Vue.js TodoList component for micro-frontend architecture, built with the `@mknz/vue-mfe-wrapper` framework.
+A modern TodoList component for Vue.js micro-frontends. Built with Vue 3 and TypeScript, featuring local storage persistence and a clean UI.
+
+> 🔗 Part of the Vue MFE ecosystem. Check out [@mknz/vue-mfe-wrapper](https://github.com/mukunzidd/vue-mfe-wrapper) for the core framework.
 
 ## Features
 
-- 📝 Persistent TodoList with local storage
-- 🎨 Light/Dark theme support
-- 🔄 Real-time updates
-- 📱 Responsive design
-- 🎯 Maximum items limit control
-- ✨ Clean and modern UI
+- ✨ Modern, clean UI design
+- 💾 Local storage persistence
+- 🌓 Light/Dark theme support
+- ✅ Checkbox completion
+- 🗑️ Easy item removal
+- ⚡️ Performance optimized
 
 ## Installation
 
 ```bash
-npm install @mknz/vue-mfe-feature-b @mknz/vue-mfe-wrapper
+# Using npm
+npm install @mknz/vue-mfe-feature-b
+
+# Using bun
+bun add @mknz/vue-mfe-feature-b
 ```
 
-## Usage with Vue MFE Wrapper
+## Quick Start
 
 ```vue
-<template>
-  <FrameworkWrapper :config="config">
-    <!-- Feature B will be rendered here -->
-  </FrameworkWrapper>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { FrameworkWrapper } from '@mknz/vue-mfe-wrapper'
-import { VueMfeFeatureB, TodoList } from './features'
-import type { WrapperConfig } from '@mknz/vue-mfe-wrapper'
-
-const config = ref<WrapperConfig>({
-  features: [
-    {
-      name: 'feature-b',
-      props: {
-        theme: 'dark',
-        storageKey: 'my-todos',
-        maxItems: 100
-      }
-    }
-  ]
-})
+<script setup>
+import { TodoList } from '@mknz/vue-mfe-feature-b'
 </script>
+
+<template>
+  <TodoList />
+</template>
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `theme` | `'light' \| 'dark'` | `'light'` | Visual theme of the todo list |
-| `storageKey` | `string` | `'vue-mfe-todos'` | Key used for local storage |
+| `storageKey` | `string` | `'todos'` | Local storage key for persistence |
 | `maxItems` | `number` | `100` | Maximum number of todo items |
+| `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
 
-## Features in Detail
+## Events
 
-### Local Storage Persistence
-- Todos are automatically saved to localStorage
-- Persists across page reloads
-- Custom storage key support
+- `@item-added`: Emitted when a new todo is added
+- `@item-removed`: Emitted when a todo is removed
+- `@item-toggled`: Emitted when a todo's completion status changes
 
-### Theme Support
-- Light theme for bright environments
-- Dark theme for reduced eye strain
-- Seamless theme switching
+## Example with Event Handling
 
-### Maximum Items Control
-- Configurable maximum items limit
-- Clear error messaging when limit is reached
-- Prevents overloading the UI
+```vue
+<script setup>
+import { TodoList } from '@mknz/vue-mfe-feature-b'
 
-## Development
+const handleItemAdded = (item) => {
+  console.log('New todo added:', item)
+}
 
-```bash
-# Install dependencies
-npm install
+const handleItemToggled = (item) => {
+  console.log('Todo toggled:', item)
+}
+</script>
 
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Run tests (4 passing)
-npm run test
+<template>
+  <TodoList
+    storage-key="my-todos"
+    :max-items="50"
+    theme="light"
+    @item-added="handleItemAdded"
+    @item-toggled="handleItemToggled"
+  />
+</template>
 ```
 
-## Testing Coverage
+## Local Storage
 
-The component is thoroughly tested with 4 test suites:
-1. Basic rendering and props validation
-2. Todo addition and removal functionality
-3. Local storage persistence
-4. Maximum items limit enforcement
+The TodoList component automatically saves todos to local storage using the specified `storageKey`. The data structure is:
+
+```typescript
+interface Todo {
+  text: string
+  completed: boolean
+}
+```
+
+## Styling
+
+The component comes with a modern, clean design out of the box. It supports both light and dark themes and is fully responsive.
+
+### CSS Variables
+
+You can customize the appearance by overriding these CSS variables:
+
+```css
+:root {
+  --todo-primary-color: #1a237e;
+  --todo-bg-color: #ffffff;
+  --todo-text-color: #333333;
+  --todo-border-radius: 10px;
+}
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT
+MIT 

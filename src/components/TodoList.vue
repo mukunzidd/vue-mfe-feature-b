@@ -1,208 +1,212 @@
 <template>
-  <div class="todo-list" :class="theme">
-    <h2>Todo List</h2>
-    <div v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-    <div class="add-todo">
+  <div class="todo-container">
+    <h1 class="title">To-Do List 📝</h1>
+    
+    <div class="input-container">
       <input 
+        type="text" 
         v-model="newTodo" 
+        placeholder="Add your text"
         @keyup.enter="addTodo"
-        placeholder="Add a new todo"
-        type="text"
+        class="todo-input"
       >
-      <button @click="addTodo">Add</button>
+      <button @click="addTodo" class="add-button">Add</button>
     </div>
-    <ul>
-      <li v-for="todo in todos" :key="todo.id" class="todo-item">
-        <input 
-          type="checkbox" 
-          :checked="todo.completed"
-          @change="toggleTodo(todo.id)"
-        >
-        <span :class="{ completed: todo.completed }">{{ todo.text }}</span>
-        <button @click="removeTodo(todo.id)" class="remove-todo">×</button>
+
+    <ul class="todo-list">
+      <li v-for="(todo, index) in todos" :key="index" class="todo-item">
+        <div class="todo-checkbox">
+          <input 
+            type="checkbox" 
+            :checked="todo.completed"
+            @change="toggleTodo(index)"
+            class="checkbox"
+          >
+          <span :class="{ completed: todo.completed }" class="todo-text">{{ todo.text }}</span>
+        </div>
+        <button @click="removeTodo(index)" class="remove-button">×</button>
       </li>
     </ul>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
 
-interface Todo {
-  id: number
-  text: string
-  completed: boolean
+const todos = ref<{ text: string; completed: boolean }[]>([])
+const newTodo = ref('')
+
+const addTodo = () => {
+  if (newTodo.value.trim()) {
+    todos.value.push({ text: newTodo.value.trim(), completed: false })
+    newTodo.value = ''
+  }
 }
 
-export default defineComponent({
-  name: 'TodoList',
-  
-  props: {
-    theme: {
-      type: String as () => 'light' | 'dark',
-      default: 'light'
-    },
-    storageKey: {
-      type: String,
-      default: 'vue-mfe-todos'
-    },
-    maxItems: {
-      type: Number,
-      default: 100
-    }
-  },
+const removeTodo = (index: number) => {
+  todos.value.splice(index, 1)
+}
 
-  data() {
-    return {
-      todos: [] as Todo[],
-      newTodo: '',
-      nextId: 1,
-      errorMessage: ''
-    }
-  },
+const toggleTodo = (index: number) => {
+  todos.value[index].completed = !todos.value[index].completed
+}
 
-  created() {
-    this.loadTodos()
-  },
-
-  methods: {
-    loadTodos() {
-      const stored = localStorage.getItem(this.storageKey)
-      if (stored) {
-        const data = JSON.parse(stored)
-        this.todos = data.todos
-        this.nextId = data.nextId
-      }
-    },
-
-    saveTodos() {
-      localStorage.setItem(this.storageKey, JSON.stringify({
-        todos: this.todos,
-        nextId: this.nextId
-      }))
-    },
-
-    addTodo() {
-      if (this.todos.length >= this.maxItems) {
-        this.errorMessage = 'Maximum items reached'
-        return
-      }
-
-      if (this.newTodo.trim()) {
-        this.todos.push({
-          id: this.nextId++,
-          text: this.newTodo.trim(),
-          completed: false
-        })
-        this.newTodo = ''
-        this.errorMessage = ''
-        this.saveTodos()
-      }
-    },
-
-    toggleTodo(id: number) {
-      const todo = this.todos.find(t => t.id === id)
-      if (todo) {
-        todo.completed = !todo.completed
-        this.saveTodos()
-      }
-    },
-
-    removeTodo(id: number) {
-      const index = this.todos.findIndex(t => t.id === id)
-      if (index !== -1) {
-        this.todos.splice(index, 1)
-        this.saveTodos()
-      }
-    }
+// Load todos from localStorage
+onMounted(() => {
+  const savedTodos = localStorage.getItem('todos')
+  if (savedTodos) {
+    todos.value = JSON.parse(savedTodos)
   }
 })
+
+// Save todos to localStorage whenever they change
+watch(todos, (newTodos) => {
+  localStorage.setItem('todos', JSON.stringify(newTodos))
+}, { deep: true })
 </script>
 
 <style scoped>
-.todo-list {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+.todo-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.todo-list.dark {
-  background-color: #2c3e50;
-  color: white;
+.title {
+  color: #1a237e;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
 }
 
-.todo-list.light {
-  background-color: #ecf0f1;
-  color: #2c3e50;
-}
-
-.error-message {
-  color: #e74c3c;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.add-todo {
+.input-container {
   display: flex;
-  margin-bottom: 20px;
-  gap: 10px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-input[type="text"] {
+.todo-input {
   flex: 1;
-  padding: 8px;
-  border: 1px solid #bdc3c7;
-  border-radius: 4px;
+  padding: 1rem;
+  border: none;
+  background: #f0f2f5;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
-button {
-  padding: 8px 16px;
-  background-color: #3498db;
+.todo-input:focus {
+  box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.2);
+}
+
+.add-button {
+  padding: 0.5rem 2rem;
+  background: #ff5252;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-button:hover {
-  background-color: #2980b9;
+.add-button:hover {
+  background: #ff1744;
 }
 
-ul {
+.todo-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 8px;
-  margin-bottom: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  gap: 10px;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
-.completed {
+.todo-item:hover {
+  background: #f0f2f5;
+}
+
+.todo-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.todo-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+.todo-text.completed {
   text-decoration: line-through;
-  opacity: 0.7;
+  color: #999;
 }
 
-.remove-todo {
-  background-color: #e74c3c;
-  padding: 4px 8px;
-  margin-left: auto;
+.remove-button {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
 }
 
-.remove-todo:hover {
-  background-color: #c0392b;
+.remove-button:hover {
+  color: #ff1744;
+  background: rgba(255, 23, 68, 0.1);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .todo-container {
+    background: #1a1a1a;
+  }
+
+  .title {
+    color: #fff;
+  }
+
+  .todo-input {
+    background: #2d2d2d;
+    color: #fff;
+  }
+
+  .todo-item {
+    background: #2d2d2d;
+  }
+
+  .todo-item:hover {
+    background: #363636;
+  }
+
+  .todo-text {
+    color: #fff;
+  }
+
+  .todo-text.completed {
+    color: #666;
+  }
 }
 </style>
